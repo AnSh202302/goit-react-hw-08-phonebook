@@ -31,7 +31,6 @@ export const contactSlice = createSlice({
 
       .addCase(addContact.pending, handlePending)
       .addCase(addContact.fulfilled, (state, action) => {
-        console.log(action.payload);
         state.isLoading = false;
         state.error = null;
         state.items.push(action.payload);
@@ -56,6 +55,8 @@ export const contactSlice = createSlice({
         const index = state.items.findIndex(
           contact => contact.id === action.payload.id
         );
+        console.log(index);
+        console.log(state.items);
         state.items.splice(index, 1, action.payload);
       })
       .addCase(editContact.rejected, handleRejected);

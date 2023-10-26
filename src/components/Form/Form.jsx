@@ -5,7 +5,7 @@ import { getContacts } from 'redux/selector';
 import { Button, TextField } from '@mui/material';
 export default function Form() {
   const [name, setName] = useState('');
-  const [phone, setNamber] = useState('');
+  const [number, setNamber] = useState('');
   const contacts = useSelector(getContacts);
 
   const dispatch = useDispatch();
@@ -15,7 +15,7 @@ export default function Form() {
       case 'name':
         setName(e.target.value);
         break;
-      case 'phone':
+      case 'number':
         setNamber(e.target.value);
         break;
       default:
@@ -31,7 +31,7 @@ export default function Form() {
     dispatch(
       addContact({
         name,
-        phone,
+        number,
       })
     );
     setName('');
@@ -55,10 +55,10 @@ export default function Form() {
       <TextField
         id="standard-basic"
         variant="standard"
-        label="Phone"
+        label="Number"
         type="tel"
-        value={phone}
-        name="phone"
+        value={number}
+        name="number"
         pattern="\+?\d{1,4}?[\-.\s]?\(?\d{1,3}?\)?[\-.\s]?\d{1,4}[\-.\s]?\d{1,4}[\-.\s]?\d{1,9}"
         title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
         required

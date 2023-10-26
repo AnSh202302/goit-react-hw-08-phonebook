@@ -14,10 +14,10 @@ import {
   TextField,
 } from '@mui/material';
 
-export default function ContactListItem({ contact: { name, phone, id } }) {
+export default function ContactListItem({ contact: { name, number, id } }) {
   const [isEditMode, setIsEditMode] = useState(false);
   const [editName, setEditName] = useState(name);
-  const [editPhone, setEditPhone] = useState(phone);
+  const [editNumber, setEditNumber] = useState(number);
 
   const dispatch = useDispatch();
 
@@ -25,12 +25,12 @@ export default function ContactListItem({ contact: { name, phone, id } }) {
     setIsEditMode(prev => !prev);
   };
   useEffect(() => {
-    if (!isEditMode && (name !== editName || phone !== editPhone)) {
+    if (!isEditMode && (name !== editName || number !== editNumber)) {
       dispatch(
         editContact({
           id,
           name: editName,
-          phone: editPhone,
+          number: editNumber,
         })
       );
     }
@@ -42,7 +42,7 @@ export default function ContactListItem({ contact: { name, phone, id } }) {
       setEditName(target.value);
       return;
     }
-    setEditPhone(target.value);
+    setEditNumber(target.value);
   };
   return (
     <Grid item>
@@ -65,13 +65,13 @@ export default function ContactListItem({ contact: { name, phone, id } }) {
               onChange={handleChange}
               type="text"
               name="editPhone"
-              value={editPhone}
+              value={editNumber}
             ></TextField>
           </CardContent>
         ) : (
           <CardContent>
             <Typography variant="subtitle1">{name}</Typography>
-            <Typography variant="subtitle1"> {phone}</Typography>
+            <Typography variant="subtitle1"> {number}</Typography>
           </CardContent>
         )}
         <CardActions>
@@ -83,46 +83,10 @@ export default function ContactListItem({ contact: { name, phone, id } }) {
             type="button"
             onClick={() => dispatch(deleteContact(id))}
           >
-            {' '}
             <DeleteForeverIcon />
           </Button>
-
-          {/* <button type="button" onClick={handleEdit}>
-            {isEditMode ? <SaveIcon /> : <EditIcon />}
-          </button> */}
-          {/* <button type="button" onClick={() => dispatch(deleteContact(id))}>
-            <DeleteForeverIcon />
-          </button> */}
         </CardActions>
       </Card>
     </Grid>
-    // <li>
-    //   {isEditMode ? (
-    //     <>
-    //       <input
-    //         onChange={handleChange}
-    //         type="text"
-    //         name="editName"
-    //         value={editName}
-    //       ></input>
-    //       <input
-    //         onChange={handleChange}
-    //         type="text"
-    //         name="editPhone"
-    //         value={editPhone}
-    //       ></input>
-    //     </>
-    //   ) : (
-    //     <>
-    //       <span>{name}</span>:<span> {phone}</span>{' '}
-    //     </>
-    //   )}
-    //   <button type="button" onClick={handleEdit}>
-    //     {isEditMode ? <SaveIcon /> : <EditIcon />}
-    //   </button>
-    //   <button type="button" onClick={() => dispatch(deleteContact(id))}>
-    //     <DeleteForeverIcon />
-    //   </button>
-    // </li>
   );
 }

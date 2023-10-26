@@ -5,4 +5,6 @@ export const initialState = {
     error: null,
   },
   filter: '',
+  token: null,
+  isLoggedIn: false,
 };
