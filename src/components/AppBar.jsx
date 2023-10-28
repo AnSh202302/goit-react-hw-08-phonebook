@@ -15,9 +15,11 @@ export default function ButtonAppBar() {
           <Button color="inherit" onClick={() => navigation('/')}>
             Home
           </Button>
-          <Button color="inherit" onClick={() => navigation('/contacts')}>
-            Contacts
-          </Button>
+          {isLoggedIn && (
+            <Button color="inherit" onClick={() => navigation('/contacts')}>
+              Contacts
+            </Button>
+          )}
 
           {!isLoggedIn && (
             <Button color="inherit" onClick={() => navigation('/register')}>
