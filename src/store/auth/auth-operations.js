@@ -20,7 +20,7 @@ export const register = createAsyncThunk(
       token.set(data.token);
       return data;
     } catch (err) {
-      return thunkAPI.rejectWithValue(err.message);
+      return thunkAPI.rejectWithValue(err.response?.data ?? err.message);
     }
   }
 );
@@ -33,7 +33,7 @@ export const logIn = createAsyncThunk(
       token.set(data.token);
       return data;
     } catch (err) {
-      return thunkAPI.rejectWithValue(err.message);
+      return thunkAPI.rejectWithValue(err.response?.data ?? err.message);
     }
   }
 );
@@ -66,12 +66,3 @@ export const fetchCurrentUser = createAsyncThunk(
     }
   }
 );
-
-//     try {
-//       // If there is a token, add it to the HTTP header and perform the request
-//       setAuthHeader(persistedToken);
-//       const res = await axios.get('/users/me');
-//       return res.data;
-//     } catch (error) {
-//       return thunkAPI.rejectWithValue(error.message);
-//     }
