@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { useState } from 'react';
-import { register } from 'redux/auth/auth-operations';
+import { register } from 'store/auth/auth-operations';
 
 export default function RegistrationsPage() {
   const dispatch = useDispatch();

@@ -2,7 +2,7 @@ import { Grid } from '@mui/material';
 import ContactListItem from 'components/ContactListItem/ContactListItem';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { getContacts, getFilter } from 'redux/selector';
+import { getContacts, getFilter } from 'store/selector';
 
 export const ContactList = () => {
   const contacts = useSelector(getContacts);

@@ -2,9 +2,9 @@ import Form from 'components/Form/Form';
 import { Filter } from 'components/Filter/Filter';
 import { ContactList } from 'components/ContactList/ContactList';
 import { useDispatch, useSelector } from 'react-redux';
-import { getError, getIsLoading } from 'redux/selector';
+import { getError, getIsLoading } from 'store/selector';
 import { useEffect } from 'react';
-import { fetchContacts } from 'redux/operations';
+import { fetchContacts } from 'store/operations';
 import { Container, Typography } from '@mui/material';
 
 export default function ContactsPage() {

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addContact } from 'redux/operations';
-import { getContacts } from 'redux/selector';
+import { addContact } from 'store/operations';
+import { getContacts } from 'store/selector';
 import { Button, TextField } from '@mui/material';
 export default function Form() {
   const [name, setName] = useState('');

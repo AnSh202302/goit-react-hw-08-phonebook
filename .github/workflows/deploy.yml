@@ -13,12 +13,17 @@ jobs:
 
       - name: Install, lint, build 🔧
         run: |
-          npm install
-          npm run lint:js
+          npm ci
           npm run build
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@4.1.0
         with:
           branch: gh-pages
-          folder: build
+          folder: dist
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm

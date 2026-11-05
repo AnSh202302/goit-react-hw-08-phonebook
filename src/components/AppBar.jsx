@@ -1,8 +1,8 @@
 import { Toolbar, AppBar, Button } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { logOut } from 'redux/auth/auth-operations';
-import { selectIsLoggedIn } from 'redux/auth/auth-selector';
+import { logOut } from 'store/auth/auth-operations';
+import { selectIsLoggedIn } from 'store/auth/auth-selector';
 
 export default function ButtonAppBar() {
   const dispatch = useDispatch();

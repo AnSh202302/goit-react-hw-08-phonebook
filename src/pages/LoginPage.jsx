@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { useState } from 'react';
-import { logIn } from 'redux/auth/auth-operations';
+import { logIn } from 'store/auth/auth-operations';
 
 export default function LoginPage() {
   const dispatch = useDispatch();

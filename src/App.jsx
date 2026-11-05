@@ -3,7 +3,7 @@ import ButtonAppBar from './components/AppBar';
 import { Route, Routes } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
-import { fetchCurrentUser } from 'redux/auth/auth-operations';
+import { fetchCurrentUser } from 'store/auth/auth-operations';
 import Layout from 'components/Layout/Layout';
 import HomePage from 'pages/HomePage';
 import RegistrationsPage from 'pages/RegistrationsPage';
