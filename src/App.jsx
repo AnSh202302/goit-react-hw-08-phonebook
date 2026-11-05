@@ -1,4 +1,4 @@
-import { CssBaseline } from '@mui/material';
+import { Container, CssBaseline, ThemeProvider } from '@mui/material';
 import ButtonAppBar from './components/AppBar';
 import { Route, Routes } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -13,6 +13,7 @@ import { PrivateRoute } from 'components/PrivateRoute';
 import { RestrictedRoute } from 'components/RestrictedRoute';
 import NotFound from 'components/NotFound';
 import { useAuth } from 'hooks/useAuth';
+import theme from 'styled/global';
 
 export default function App() {
   const dispatch = useDispatch();
@@ -24,38 +25,45 @@ export default function App() {
   return isRefreshing ? (
     <b>Refreshing user...</b>
   ) : (
-    <CssBaseline>
-      <ButtonAppBar />
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<HomePage />} />
-          <Route
-            path="/register"
-            element={
-              <RestrictedRoute
-                redirectTo="/contacts"
-                component={<RegistrationsPage />}
+    <ThemeProvider theme={theme}>
+      <Container maxWidth="lg">
+        <CssBaseline>
+          <ButtonAppBar />
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route index element={<HomePage />} />
+              <Route
+                path="/register"
+                element={
+                  <RestrictedRoute
+                    redirectTo="/contacts"
+                    component={<RegistrationsPage />}
+                  />
+                }
               />
-            }
-          />
-          <Route
-            path="/login"
-            element={
-              <RestrictedRoute
-                redirectTo="/contacts"
-                component={<LoginPage />}
+              <Route
+                path="/login"
+                element={
+                  <RestrictedRoute
+                    redirectTo="/contacts"
+                    component={<LoginPage />}
+                  />
+                }
               />
-            }
-          />
-          <Route
-            path="/contacts"
-            element={
-              <PrivateRoute redirectTo="/login" component={<ContactsPage />} />
-            }
-          />
-          <Route path="*" element={<NotFound />} />
-        </Route>
-      </Routes>
-    </CssBaseline>
+              <Route
+                path="/contacts"
+                element={
+                  <PrivateRoute
+                    redirectTo="/login"
+                    component={<ContactsPage />}
+                  />
+                }
+              />
+              <Route path="*" element={<NotFound />} />
+            </Route>
+          </Routes>
+        </CssBaseline>
+      </Container>
+    </ThemeProvider>
   );
 }
