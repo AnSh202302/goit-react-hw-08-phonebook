@@ -3,6 +3,8 @@ export const initialState = {
     items: [],
     isLoading: false,
     error: null,
+    fetchRequestId: null,
+    mutationRequests: {},
   },
   filter: '',
   token: null,

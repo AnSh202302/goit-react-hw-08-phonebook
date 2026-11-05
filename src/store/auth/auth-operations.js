@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { sessionEnded, handleProtectedError } from '../session';
 
 axios.defaults.baseURL = 'https://connections-api.goit.global';
 
@@ -8,7 +9,7 @@ export const token = {
     axios.defaults.headers.common.Authorization = `Bearer ${token}`;
   },
   unset() {
-    axios.defaults.headers.common.Authorization = '';
+    delete axios.defaults.headers.common.Authorization;
   },
 };
 
@@ -45,11 +46,25 @@ export const logIn = createAsyncThunk(
 );
 
 export const logOut = createAsyncThunk('auth/logOut', async (_, thunkAPI) => {
+  const currentToken = thunkAPI.getState().auth.token;
+
+  token.unset();
+  thunkAPI.dispatch(sessionEnded());
+
+  if (!currentToken) {
+    return;
+  }
+
   try {
-    await axios.post('/users/logout');
-    token.unset();
+    await axios.post('/users/logout', null, {
+      headers: {
+        Authorization: `Bearer ${currentToken}`,
+      },
+    });
   } catch (err) {
-    return thunkAPI.rejectWithValue(err.message);
+    return thunkAPI.rejectWithValue({
+      status: err.response?.status ?? null,
+    });
   }
 });
 
@@ -58,17 +73,21 @@ export const fetchCurrentUser = createAsyncThunk(
   async (_, thunkAPI) => {
     const state = thunkAPI.getState();
     const persistedToken = state.auth.token;
+
     if (persistedToken === null) {
-      return thunkAPI.rejectWithValue('Unable to fetch user');
+      return thunkAPI.rejectWithValue({
+        status: null,
+      });
     }
 
     try {
       token.set(persistedToken);
+
       const res = await axios.get('/users/current');
-      console.log(res.data);
+
       return res.data;
     } catch (err) {
-      return thunkAPI.rejectWithValue(err.message);
+      return handleProtectedError(err, thunkAPI);
     }
   }
 );

@@ -1,11 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { register, logIn, logOut, fetchCurrentUser } from './auth-operations';
+import { sessionEnded } from '../session';
+import { register, logIn, fetchCurrentUser } from './auth-operations';
 
 const initialState = {
   user: { name: null, email: null },
   token: null,
   isLoggedIn: false,
   isRefreshing: false,
+  refreshError: null,
+  refreshRequestId: null,
 };
 
 const authSlise = createSlice({
@@ -14,6 +17,10 @@ const authSlise = createSlice({
 
   extraReducers: builder => {
     builder
+      .addCase(sessionEnded, () => ({
+        ...initialState,
+        user: { name: null, email: null },
+      }))
       .addCase(register.fulfilled, (state, action) => {
         state.user = action.payload.user;
         state.token = action.payload.token;
@@ -24,22 +31,38 @@ const authSlise = createSlice({
         state.token = action.payload.token;
         state.isLoggedIn = true;
       })
-      .addCase(logOut.fulfilled, state => {
-        state.user = { name: null, email: null };
-        state.token = null;
-        state.isLoggedIn = false;
-      })
-      .addCase(fetchCurrentUser.pending, state => {
+
+      .addCase(fetchCurrentUser.pending, (state, action) => {
         state.isRefreshing = true;
+        state.refreshError = null;
+        state.refreshRequestId = action.meta.requestId;
       })
       .addCase(fetchCurrentUser.fulfilled, (state, action) => {
-        console.log(action);
+        if (state.refreshRequestId !== action.meta.requestId) {
+          return;
+        }
+
+        state.refreshRequestId = null;
         state.user = action.payload;
         state.isLoggedIn = true;
         state.isRefreshing = false;
+        state.refreshError = null;
       })
-      .addCase(fetchCurrentUser.rejected, state => {
+      .addCase(fetchCurrentUser.rejected, (state, action) => {
+        if (state.refreshRequestId !== action.meta.requestId) {
+          return;
+        }
+
+        state.refreshRequestId = null;
         state.isRefreshing = false;
+        state.refreshError = null;
+
+        if (state.token) {
+          state.refreshError =
+            action.payload?.status == null
+              ? 'Unable to connect to the server. Please try again.'
+              : 'Unable to restore your session. Please try again.';
+        }
       });
   },
 });

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { handleProtectedError } from './session';
 
 export const fetchContacts = createAsyncThunk(
   'contacts/fetchAll',
@@ -8,7 +9,7 @@ export const fetchContacts = createAsyncThunk(
       const response = await axios.get('/contacts');
       return response.data;
     } catch (e) {
-      return thunkAPI.rejectWithValue(e.message);
+      return handleProtectedError(e, thunkAPI);
     }
   }
 );
@@ -20,7 +21,7 @@ export const addContact = createAsyncThunk(
       const response = await axios.post('/contacts', text);
       return response.data;
     } catch (e) {
-      return thunkAPI.rejectWithValue(e.message);
+      return handleProtectedError(e, thunkAPI);
     }
   }
 );
@@ -32,7 +33,7 @@ export const deleteContact = createAsyncThunk(
       const response = await axios.delete(`/contacts/${contactId}`);
       return response.data;
     } catch (e) {
-      return thunkAPI.rejectWithValue(e.message);
+      return handleProtectedError(e, thunkAPI);
     }
   }
 );
@@ -46,7 +47,7 @@ export const editContact = createAsyncThunk(
       console.log(response.data);
       return response.data;
     } catch (e) {
-      return thunkAPI.rejectWithValue(e.message);
+      return handleProtectedError(e, thunkAPI);
     }
   }
 );

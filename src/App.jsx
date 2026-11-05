@@ -1,7 +1,13 @@
-import { Container, CssBaseline, ThemeProvider } from '@mui/material';
+import {
+  Alert,
+  Button,
+  Container,
+  CssBaseline,
+  ThemeProvider,
+} from '@mui/material';
 import ButtonAppBar from './components/AppBar';
 import { Route, Routes } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { fetchCurrentUser } from 'store/auth/auth-operations';
 import Layout from 'components/Layout/Layout';
@@ -18,10 +24,33 @@ import theme from 'styled/global';
 export default function App() {
   const dispatch = useDispatch();
   const { isRefreshing } = useAuth();
+  const refreshError = useSelector(state => state.auth.refreshError);
 
   useEffect(() => {
     dispatch(fetchCurrentUser());
   }, [dispatch]);
+  if (refreshError) {
+    return (
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Container maxWidth="sm" sx={{ py: 4 }}>
+          <Alert
+            severity="error"
+            action={
+              <Button
+                color="inherit"
+                onClick={() => dispatch(fetchCurrentUser())}
+              >
+                Retry
+              </Button>
+            }
+          >
+            {refreshError}
+          </Alert>
+        </Container>
+      </ThemeProvider>
+    );
+  }
   return isRefreshing ? (
     <b>Refreshing user...</b>
   ) : (
