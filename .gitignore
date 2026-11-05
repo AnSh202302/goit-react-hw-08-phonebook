@@ -1,6 +1,8 @@
 
 #Junk
-.vscode/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
 .idea/
 
 # dependencies
