@@ -20,7 +20,10 @@ export const register = createAsyncThunk(
       token.set(data.token);
       return data;
     } catch (err) {
-      return thunkAPI.rejectWithValue(err.response?.data ?? err.message);
+      return thunkAPI.rejectWithValue({
+        status: err.response?.status ?? null,
+        data: err.response?.data ?? null,
+      });
     }
   }
 );
@@ -33,7 +36,10 @@ export const logIn = createAsyncThunk(
       token.set(data.token);
       return data;
     } catch (err) {
-      return thunkAPI.rejectWithValue(err.response?.data ?? err.message);
+      return thunkAPI.rejectWithValue({
+        status: err.response?.status ?? null,
+        data: err.response?.data ?? null,
+      });
     }
   }
 );

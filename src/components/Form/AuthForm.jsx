@@ -33,6 +33,7 @@ function AuthForm({ mode, onSubmit }) {
 
   const handleSubmit = async event => {
     event.preventDefault();
+    if (isSubmitting) return;
     setError('');
     setIsSubmitting(true);
 
@@ -47,14 +48,30 @@ function AuthForm({ mode, onSubmit }) {
         password: '',
       });
     } catch (submitError) {
-      const isDuplicateEmail =
-        submitError?.code === 11000 && submitError?.keyPattern?.email;
+      const { status, data } = submitError ?? {};
 
-      setError(
-        isDuplicateEmail
-          ? 'This email is already registered. Please log in.'
-          : 'Unable to submit the form. Please try again.'
-      );
+      const isDuplicateEmail =
+        mode === 'register' &&
+        (status === 409 || (data?.code === 11000 && data?.keyPattern?.email));
+
+      let message = 'Unable to submit the form. Please try again.';
+
+      if (status === null) {
+        message =
+          'Unable to connect to the server. Check your connection and try again.';
+      } else if (isDuplicateEmail) {
+        message = 'This email is already registered. Please log in.';
+      } else if (mode === 'login' && [400, 401, 403].includes(status)) {
+        message = 'Incorrect email or password.';
+      } else if (status === 429) {
+        message = 'Too many attempts. Please try again later.';
+      } else if (status >= 500) {
+        message = 'The server is temporarily unavailable.';
+      } else if (mode === 'register' && [400, 422].includes(status)) {
+        message = 'Please check your name, email and password.';
+      }
+
+      setError(message);
     } finally {
       setIsSubmitting(false);
     }
