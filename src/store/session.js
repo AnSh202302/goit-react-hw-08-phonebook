@@ -1,5 +1,5 @@
-import axios from 'axios';
 import { createAction } from '@reduxjs/toolkit';
+import { token } from '../api/client';
 
 export const sessionEnded = createAction('auth/sessionEnded');
 
@@ -13,23 +13,13 @@ export const handleProtectedError = (error, thunkAPI) => {
     state.contacts.mutationRequests[requestId] === true;
 
   if (!isCurrentRequest) {
-    return thunkAPI.rejectWithValue({
-      stale: true,
-    });
+    return thunkAPI.rejectWithValue({ stale: true });
   }
 
-  const status = error.response?.status ?? null;
-
-  if (status === 401) {
-    delete axios.defaults.headers.common.Authorization;
+  if (error.status === 401) {
+    token.unset();
     thunkAPI.dispatch(sessionEnded());
   }
 
-  return thunkAPI.rejectWithValue({
-    status,
-    message:
-      status === null
-        ? 'Unable to connect to the server. Please try again.'
-        : 'The request failed. Please try again.',
-  });
+  return thunkAPI.rejectWithValue(error);
 };
