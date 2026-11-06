@@ -3,10 +3,12 @@ import {
   Button,
   Container,
   FormControl,
-  Input,
+  OutlinedInput,
   InputAdornment,
   InputLabel,
   Alert,
+  Paper,
+  Typography,
 } from '@mui/material';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
@@ -78,85 +80,102 @@ function AuthForm({ mode, onSubmit }) {
   };
 
   return (
-    <Container>
-      <Box
-        component="form"
-        onSubmit={handleSubmit}
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          mb: 4,
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: 2,
-          padding: 8,
-        }}
-      >
-        {mode === 'register' && (
-          <FormControl variant="standard">
-            <InputLabel htmlFor="auth-name">Name</InputLabel>
-            <Input
+    <Container maxWidth="sm" sx={{ py: { xs: 3, md: 6 } }}>
+      <Box component={Paper} variant="glass" sx={{ p: { xs: 3, sm: 5 } }}>
+        <Typography
+          variant="h1"
+          sx={{
+            fontSize: { xs: '2rem', sm: '2.5rem' },
+            fontWeight: 700,
+            mb: 3,
+          }}
+        >
+          {mode === 'register' ? 'Create account' : 'Welcome back'}
+        </Typography>
+        <Box
+          component="form"
+          onSubmit={handleSubmit}
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 3,
+          }}
+        >
+          {mode === 'register' && (
+            <FormControl variant="outlined" fullWidth disabled={isSubmitting}>
+              <InputLabel htmlFor="auth-name">Name</InputLabel>
+              <OutlinedInput
+                label="Name"
+                required
+                value={name}
+                type="text"
+                onChange={handleChange}
+                name="name"
+                id="auth-name"
+                autoComplete="name"
+                startAdornment={
+                  <InputAdornment position="start">
+                    <AccountCircle />
+                  </InputAdornment>
+                }
+              />
+            </FormControl>
+          )}
+          <FormControl variant="outlined" fullWidth disabled={isSubmitting}>
+            <InputLabel htmlFor="auth-email">Email</InputLabel>
+            <OutlinedInput
+              label="Email"
               required
-              value={name}
-              type="text"
+              value={email}
+              type="email"
               onChange={handleChange}
-              name="name"
-              id="auth-name"
-              autoComplete="name"
+              name="email"
+              id="auth-email"
+              autoComplete="email"
               startAdornment={
                 <InputAdornment position="start">
-                  <AccountCircle />
+                  <AlternateEmailIcon />
                 </InputAdornment>
               }
             />
           </FormControl>
-        )}
-        <FormControl variant="standard">
-          <InputLabel htmlFor="auth-email">Email</InputLabel>
-          <Input
-            required
-            value={email}
-            type="email"
-            onChange={handleChange}
-            name="email"
-            id="auth-email"
-            autoComplete="email"
-            startAdornment={
-              <InputAdornment position="start">
-                <AlternateEmailIcon />
-              </InputAdornment>
-            }
-          />
-        </FormControl>
-        <FormControl variant="standard">
-          <InputLabel htmlFor="auth-password">Password</InputLabel>
-          <Input
-            required
-            value={password}
-            type="password"
-            onChange={handleChange}
-            name="password"
-            id="auth-password"
-            autoComplete={
-              mode === 'register' ? 'new-password' : 'current-password'
-            }
-            startAdornment={
-              <InputAdornment position="start">
-                <KeyIcon />
-              </InputAdornment>
-            }
-          />
-        </FormControl>
+          <FormControl variant="outlined" fullWidth disabled={isSubmitting}>
+            <InputLabel htmlFor="auth-password">Password</InputLabel>
+            <OutlinedInput
+              label="Password"
+              required
+              value={password}
+              type="password"
+              onChange={handleChange}
+              name="password"
+              id="auth-password"
+              autoComplete={
+                mode === 'register' ? 'new-password' : 'current-password'
+              }
+              startAdornment={
+                <InputAdornment position="start">
+                  <KeyIcon />
+                </InputAdornment>
+              }
+            />
+          </FormControl>
 
-        {error && <Alert severity="error">{error}</Alert>}
+          {error && <Alert severity="error">{error}</Alert>}
 
-        <Button variant="contained" type="submit" disabled={isSubmitting}>
-          {isSubmitting
-            ? 'Submitting...'
-            : mode === 'register'
-              ? 'Sign up'
-              : 'Log in'}
-        </Button>
+          <Button
+            variant="contained"
+            type="submit"
+            disabled={isSubmitting}
+            size="large"
+            fullWidth
+          >
+            {isSubmitting
+              ? 'Submitting...'
+              : mode === 'register'
+                ? 'Sign up'
+                : 'Log in'}
+          </Button>
+        </Box>
       </Box>
     </Container>
   );

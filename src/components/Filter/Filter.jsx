@@ -1,4 +1,5 @@
-import { TextField } from '@mui/material';
+import { InputAdornment, TextField } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { filterSearch } from 'store/filterSlise';
@@ -10,17 +11,27 @@ export const Filter = () => {
   const handleSearch = e => dispatch(filterSearch(e.target.value));
 
   return (
-    <label>
-      Find contacts by name
-      <TextField
-        id="standard-basic"
-        variant="standard"
-        type="text"
-        value={filter}
-        onChange={handleSearch}
-        required
-      />
-    </label>
+    <TextField
+      id="contact-search"
+      placeholder="Search by name"
+      variant="outlined"
+      type="search"
+      fullWidth
+      value={filter}
+      onChange={handleSearch}
+      slotProps={{
+        htmlInput: {
+          'aria-label': 'Search contacts by name',
+        },
+        input: {
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon />
+            </InputAdornment>
+          ),
+        },
+      }}
+    />
   );
 };
 

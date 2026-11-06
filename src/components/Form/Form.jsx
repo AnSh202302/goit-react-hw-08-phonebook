@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addContact } from 'store/operations';
 import { getContacts } from 'store/selector';
-import { Alert, Button, TextField } from '@mui/material';
+import { Alert, Button, TextField, Stack } from '@mui/material';
 import {
   normalizeName,
   normalizePhone,
@@ -89,11 +89,12 @@ export default function Form() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <Stack component="form" spacing={3} onSubmit={handleSubmit}>
       <TextField
         id="add-contact-name"
         label="Name"
-        variant="standard"
+        variant="outlined"
+        fullWidth
         type="text"
         value={name}
         name="name"
@@ -104,7 +105,8 @@ export default function Form() {
       />
       <TextField
         id="add-contact-number"
-        variant="standard"
+        variant="outlined"
+        fullWidth
         label="Number"
         type="tel"
         value={number}
@@ -117,12 +119,13 @@ export default function Form() {
       {error && <Alert severity="error">{error}</Alert>}
       <Button
         variant="contained"
-        size="small"
+        size="large"
+        fullWidth
         type="submit"
         disabled={isSubmitting}
       >
         {isSubmitting ? 'Adding...' : 'Add contact'}
       </Button>
-    </form>
+    </Stack>
   );
 }

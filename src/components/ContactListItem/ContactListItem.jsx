@@ -8,23 +8,28 @@ import {
   isValidPhone,
   getPhoneKey,
 } from '../../utils/contactUtils';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import EditIcon from '@mui/icons-material/Edit';
-import SaveIcon from '@mui/icons-material/Save';
+import DeleteOutlined from '@mui/icons-material/DeleteOutlined';
+import EditOutlined from '@mui/icons-material/EditOutlined';
+import SaveOutlined from '@mui/icons-material/SaveOutlined';
 import ClearIcon from '@mui/icons-material/Clear';
 import {
   Card,
   CardActions,
   CardContent,
-  Grid,
   Typography,
-  Button,
+  IconButton,
   TextField,
   Alert,
+  Avatar,
+  Box,
+  Stack,
 } from '@mui/material';
 import { getContacts } from 'store/selector';
 
-export default function ContactListItem({ contact: { name, number, id } }) {
+export default function ContactListItem({
+  contact: { name, number, id },
+  avatarColor,
+}) {
   const contacts = useSelector(getContacts);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editName, setEditName] = useState(name);
@@ -111,84 +116,150 @@ export default function ContactListItem({ contact: { name, number, id } }) {
       setIsSaving(false);
     }
   };
+
+  const initials = name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map(part => Array.from(part)[0])
+    .join('')
+    .toUpperCase();
+
   return (
-    <Grid item>
-      <Card>
-        {isEditMode ? (
-          <CardContent>
+    <Card
+      sx={{
+        display: 'flex',
+        flexDirection: {
+          xs: 'column',
+          sm: isEditMode ? 'column' : 'row',
+        },
+        alignItems: {
+          xs: 'stretch',
+          sm: isEditMode ? 'stretch' : 'center',
+        },
+      }}
+    >
+      {isEditMode ? (
+        <CardContent sx={{ flex: 1, minWidth: 0 }}>
+          <Stack spacing={3}>
             <TextField
               id={`edit-contact-name-${id}`}
               label="Name"
-              variant="standard"
+              variant="outlined"
+              fullWidth
               onChange={handleChange}
               type="text"
               name="editName"
               value={editName}
               disabled={isSaving}
-            ></TextField>
+            />
+
             <TextField
               id={`edit-contact-number-${id}`}
               label="Number"
-              variant="standard"
+              variant="outlined"
+              fullWidth
               onChange={handleChange}
+              type="tel"
               name="editPhone"
               value={editNumber}
               disabled={isSaving}
-            ></TextField>
+            />
+
             {error && <Alert severity="error">{error}</Alert>}
-          </CardContent>
+          </Stack>
+        </CardContent>
+      ) : (
+        <CardContent sx={{ flex: 1, minWidth: 0 }}>
+          <Stack direction="row" spacing={2} alignItems="center">
+            <Avatar aria-hidden="true" sx={{ bgcolor: avatarColor }}>
+              {initials}
+            </Avatar>
+
+            <Box
+              sx={{
+                flex: 1,
+                minWidth: 0,
+                display: 'grid',
+                gridTemplateColumns: {
+                  xs: 'minmax(0, 1fr)',
+                  lg: 'repeat(2, minmax(0, 1fr))',
+                },
+                alignItems: 'center',
+                columnGap: 2,
+                rowGap: 0.5,
+              }}
+            >
+              <Typography
+                variant="subtitle1"
+                sx={{ fontWeight: 600, overflowWrap: 'anywhere' }}
+              >
+                {name}
+              </Typography>
+
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ overflowWrap: 'anywhere' }}
+              >
+                {number}
+              </Typography>
+            </Box>
+          </Stack>
+        </CardContent>
+      )}
+      <CardActions
+        sx={{
+          flexShrink: 0,
+          justifyContent: 'flex-end',
+          p: 2,
+          gap: 1,
+        }}
+      >
+        {isEditMode ? (
+          <>
+            <IconButton
+              size="small"
+              type="button"
+              onClick={handleSave}
+              disabled={isSaving}
+              aria-label={isSaving ? 'Saving contact' : 'Save contact'}
+            >
+              <SaveOutlined />
+            </IconButton>
+
+            <IconButton
+              size="small"
+              type="button"
+              onClick={handleCancel}
+              disabled={isSaving}
+              aria-label="Cancel editing"
+            >
+              <ClearIcon />
+            </IconButton>
+          </>
         ) : (
-          <CardContent>
-            <Typography variant="subtitle1">{name}</Typography>
-            <Typography variant="subtitle1"> {number}</Typography>
-          </CardContent>
+          <>
+            <IconButton
+              size="small"
+              type="button"
+              onClick={handleEdit}
+              aria-label="Edit contact"
+            >
+              <EditOutlined />
+            </IconButton>
+
+            <IconButton
+              size="small"
+              type="button"
+              aria-label={`Delete contact ${name}`}
+              onClick={() => dispatch(deleteContact(id))}
+            >
+              <DeleteOutlined />
+            </IconButton>
+          </>
         )}
-        <CardActions>
-          {isEditMode ? (
-            <>
-              <Button
-                size="small"
-                type="button"
-                onClick={handleSave}
-                disabled={isSaving}
-                aria-label={isSaving ? 'Saving contact' : 'Save contact'}
-              >
-                <SaveIcon />
-              </Button>
-
-              <Button
-                size="small"
-                type="button"
-                onClick={handleCancel}
-                disabled={isSaving}
-                aria-label="Cancel editing"
-              >
-                <ClearIcon />
-              </Button>
-            </>
-          ) : (
-            <>
-              <Button
-                size="small"
-                type="button"
-                onClick={handleEdit}
-                aria-label="Edit contact"
-              >
-                <EditIcon />
-              </Button>
-
-              <Button
-                size="small"
-                type="button"
-                aria-label={`Delete contact ${name}`}
-                onClick={() => dispatch(deleteContact(id))}
-              >
-                <DeleteForeverIcon />
-              </Button>
-            </>
-          )}
-        </CardActions>
-      </Card>
-    </Grid>
+      </CardActions>
+    </Card>
   );
 }

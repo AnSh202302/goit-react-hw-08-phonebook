@@ -1,4 +1,4 @@
-import { Grid } from '@mui/material';
+import { Stack } from '@mui/material';
 import ContactListItem from 'components/ContactListItem/ContactListItem';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
@@ -17,13 +17,20 @@ export const ContactList = () => {
   const contactsArr = getVisibleName();
 
   return (
-    <Grid container spacing={4} marginTop={2}>
-      {contactsArr.map(contact => (
-        <ContactListItem key={contact.id} contact={contact} />
+    <Stack spacing={2} sx={{ mt: 3 }}>
+      {contactsArr.map((contact, index) => (
+        <ContactListItem
+          key={contact.id}
+          contact={contact}
+          avatarColor={
+            index % 2 === 0 ? 'contactAvatar.teal' : 'contactAvatar.blue'
+          }
+        />
       ))}
-    </Grid>
+    </Stack>
   );
 };
+
 ContactList.propTypes = {
   contactsArr: PropTypes.arrayOf(
     PropTypes.shape({
