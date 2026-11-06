@@ -3,8 +3,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addContact } from 'store/operations';
 import { getContacts } from 'store/selector';
 import { Alert, Button, TextField } from '@mui/material';
-
-const getPhoneKey = value => value.replace(/\D/gu, '');
+import {
+  normalizeName,
+  normalizePhone,
+  getPhoneKey,
+  isValidName,
+  isValidPhone,
+} from '../../utils/contactUtils';
 
 export default function Form() {
   const [name, setName] = useState('');
@@ -31,9 +36,8 @@ export default function Form() {
     e.preventDefault();
     if (isSubmitting) return;
     setError('');
-    const normalizedName = name.trim().replace(/\s+/gu, ' ');
-    const normalizedNumber = number.replace(/\s+/gu, '');
-
+    const normalizedName = normalizeName(name);
+    const normalizedNumber = normalizePhone(number);
     if (!normalizedName) {
       setError('Enter a name.');
       return;
@@ -43,15 +47,12 @@ export default function Form() {
       setError('Enter a phone number.');
       return;
     }
-    if (!/^\p{L}+(?:[ '’\-]\p{L}+)*$/u.test(normalizedName)) {
+    if (!isValidName(normalizedName)) {
       setError('Use letters, spaces, apostrophes or hyphens in the name.');
       return;
     }
 
-    if (
-      !/^\+?[\d().-]+$/u.test(normalizedNumber) ||
-      !/\d/u.test(normalizedNumber)
-    ) {
+    if (!isValidPhone(normalizedNumber)) {
       setError(
         'Use digits, parentheses, dots or hyphens, with an optional leading +.'
       );
