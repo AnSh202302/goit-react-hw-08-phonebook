@@ -10,8 +10,6 @@ import {
 
 const handlePending = (state, action) => {
   state.mutationRequests[action.meta.requestId] = true;
-  state.isLoading = true;
-  state.error = null;
 };
 const handleRejected = (state, action) => {
   state.isLoading = false;
@@ -32,10 +30,6 @@ const finishMutation = (state, action) => {
 
   delete state.mutationRequests[requestId];
 
-  state.isLoading =
-    state.fetchRequestId !== null ||
-    Object.keys(state.mutationRequests).length > 0;
-
   return true;
 };
 
@@ -43,11 +37,6 @@ const handleMutationRejected = (state, action) => {
   if (!finishMutation(state, action)) {
     return;
   }
-
-  state.error =
-    action.payload?.status === 401
-      ? null
-      : (action.payload?.message ?? 'Unable to complete the request.');
 };
 
 export const contactSlice = createSlice({
@@ -72,7 +61,7 @@ export const contactSlice = createSlice({
         }
 
         state.fetchRequestId = null;
-        state.isLoading = Object.keys(state.mutationRequests).length > 0;
+        state.isLoading = false;
         state.error = null;
         state.items = action.payload;
       })
@@ -83,7 +72,7 @@ export const contactSlice = createSlice({
 
         state.fetchRequestId = null;
         handleRejected(state, action);
-        state.isLoading = Object.keys(state.mutationRequests).length > 0;
+        state.isLoading = false;
       })
 
       .addCase(addContact.pending, handlePending)
@@ -91,7 +80,6 @@ export const contactSlice = createSlice({
         if (!finishMutation(state, action)) {
           return;
         }
-        state.error = null;
         state.items.push(action.payload);
       })
       .addCase(addContact.rejected, handleMutationRejected)
@@ -101,7 +89,6 @@ export const contactSlice = createSlice({
         if (!finishMutation(state, action)) {
           return;
         }
-        state.error = null;
         const index = state.items.findIndex(
           contact => contact.id === action.payload.id
         );
@@ -115,7 +102,6 @@ export const contactSlice = createSlice({
         if (!finishMutation(state, action)) {
           return;
         }
-        state.error = null;
         const index = state.items.findIndex(
           contact => contact.id === action.payload.id
           );

@@ -116,6 +116,19 @@ export default function ContactListItem({
       setIsSaving(false);
     }
   };
+   const handleDelete = async () => {
+    setError('');
+
+    try {
+      await dispatch(deleteContact(id)).unwrap();
+    } catch (deleteError) {
+      if (deleteError?.stale || deleteError?.status === 401) return;
+
+      setError(
+        deleteError?.message ?? 'Unable to delete the contact. Please try again.'
+      );
+    }
+  };
 
   const initials = name
     .trim()
@@ -170,11 +183,7 @@ aria-describedby={error ? `edit-contact-error-${id}` : undefined}
 aria-describedby={error ? `edit-contact-error-${id}` : undefined}
             />
 
-{error && (
-  <Alert id={`edit-contact-error-${id}`} severity="error" role="alert">
-    {error}
-  </Alert>
-)}          </Stack>
+         </Stack>
         </CardContent>
       ) : (
         <CardContent sx={{ flex: 1, minWidth: 0 }}>
@@ -214,6 +223,16 @@ aria-describedby={error ? `edit-contact-error-${id}` : undefined}
             </Box>
           </Stack>
         </CardContent>
+      )}
+      {error && (
+        <Alert
+          id={isEditMode ? `edit-contact-error-${id}` : undefined}
+          severity="error"
+          role="alert"
+          sx={{ alignSelf: 'stretch', m: 2 }}
+        >
+          {error}
+        </Alert>
       )}
       <CardActions
         sx={{
@@ -260,7 +279,7 @@ aria-describedby={error ? `edit-contact-error-${id}` : undefined}
               size="small"
               type="button"
               aria-label={`Delete contact ${name}`}
-              onClick={() => dispatch(deleteContact(id))}
+              onClick={handleDelete}
             >
               <DeleteOutlined />
             </IconButton>
