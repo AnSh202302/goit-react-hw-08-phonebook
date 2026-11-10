@@ -173,7 +173,7 @@ function AuthForm({ mode, onSubmit }) {
               ? 'Submitting...'
               : mode === 'register'
                 ? 'Sign up'
-                : 'Log in'}
+                : 'Sign in'}
           </Button>
         </Box>
       </Box>

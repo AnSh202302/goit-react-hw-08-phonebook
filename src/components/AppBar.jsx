@@ -92,12 +92,12 @@ export default function ButtonAppBar() {
             <>
               <Button component={NavLink} to="/register" color="inherit" size="small"
                 >
-                Registrations
+                Sign up
               </Button>
 
               <Button component={NavLink} to="/login" color="inherit" size="small"
                 >
-                Login
+                Sign in
               </Button>
             </>
           )}

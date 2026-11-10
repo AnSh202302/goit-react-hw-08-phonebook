@@ -152,6 +152,8 @@ export default function ContactListItem({
               name="editName"
               value={editName}
               disabled={isSaving}
+              error={Boolean(error)}
+aria-describedby={error ? `edit-contact-error-${id}` : undefined}
             />
 
             <TextField
@@ -164,10 +166,15 @@ export default function ContactListItem({
               name="editPhone"
               value={editNumber}
               disabled={isSaving}
+              error={Boolean(error)}
+aria-describedby={error ? `edit-contact-error-${id}` : undefined}
             />
 
-            {error && <Alert severity="error">{error}</Alert>}
-          </Stack>
+{error && (
+  <Alert id={`edit-contact-error-${id}`} severity="error" role="alert">
+    {error}
+  </Alert>
+)}          </Stack>
         </CardContent>
       ) : (
         <CardContent sx={{ flex: 1, minWidth: 0 }}>
