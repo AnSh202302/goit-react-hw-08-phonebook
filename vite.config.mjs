@@ -18,4 +18,8 @@ export default defineConfig({
       styled: srcPath('styled'),
     },
   },
+    test: {
+    environment: 'jsdom',
+    setupFiles: './src/test/setup.js',
+  },
 });

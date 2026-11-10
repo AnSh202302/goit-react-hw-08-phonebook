@@ -41,13 +41,11 @@ export const deleteContact = createAsyncThunk(
 export const editContact = createAsyncThunk(
   '/contacts/editContact',
   async ({ id, name, number }, thunkAPI) => {
-    console.log(name);
     try {
       const response = await api.patch(`/contacts/${id}`, {
         name,
         number,
       });
-      console.log(response.data);
       return response.data;
     } catch (e) {
       return handleProtectedError(e, thunkAPI);
