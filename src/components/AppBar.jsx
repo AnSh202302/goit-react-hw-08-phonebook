@@ -5,6 +5,7 @@ import {
   Typography,
   Avatar,
   Stack,
+  Box
 } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link as RouterLink, NavLink } from 'react-router-dom';
@@ -21,29 +22,15 @@ export default function ButtonAppBar() {
       <Toolbar
         component="nav"
         aria-label="Main navigation"
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: {
-            xs: 'minmax(0, 1fr) auto',
-            md: 'minmax(0, 1fr) auto minmax(0, 1fr)',
-          },
-          gridTemplateAreas: {
-            xs: isLoggedIn
-              ? '"brand account" "links links"'
-              : '"brand brand" "account account"',
-            md: '"brand links account"',
-          },
-          alignItems: 'center',
-          gap: 2,
-          py: 2,
-        }}
+         sx={{
+    justifyContent: 'space-between',
+  }}
       >
         <Typography
           component={RouterLink}
           to="/"
           sx={{
-            display: 'flex',
-            gridArea: 'brand',
+             display: 'flex',
             alignItems: 'center',
             justifySelf: 'start',
             fontSize: { xs: '1.125rem', sm: '1.5rem' },
@@ -75,50 +62,47 @@ export default function ButtonAppBar() {
           </Avatar>
           Phonebook
         </Typography>
+        <Box sx={{display: "flex", gap:{xs:0, sm: 2 }}}>
+
         {isLoggedIn && (
-          <Stack
-            direction="row"
-            spacing={1}
-            sx={{
-              gridArea: 'links',
-              justifySelf: 'center',
-            }}
-          >
+        
             <Button component={NavLink} to="/contacts" color="inherit">
               Contacts
             </Button>
-          </Stack>
         )}
 
         <Stack
-          direction="row"
-          spacing={1}
-          sx={{
-            gridArea: 'account',
-            justifySelf: 'end',
-            flexWrap: 'wrap',
-          }}
+          direction="row"        
         >
           {isLoggedIn ? (
             <Button
               color="inherit"
+               aria-label="Logout"
               startIcon={<LogoutOutlinedIcon />}
-              onClick={() => dispatch(logOut())}
+                onClick={() => dispatch(logOut())}
+                sx={{
+    justifyContent: { xs: 'flex-end', sm: 'flex-start' },
+  }}
             >
-              Logout
+                <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>
+    Logout
+  </Box>
             </Button>
           ) : (
             <>
-              <Button component={NavLink} to="/register" color="inherit">
+              <Button component={NavLink} to="/register" color="inherit" size="small"
+                >
                 Registrations
               </Button>
 
-              <Button component={NavLink} to="/login" color="inherit">
+              <Button component={NavLink} to="/login" color="inherit" size="small"
+                >
                 Login
               </Button>
             </>
           )}
         </Stack>
+        </Box>
       </Toolbar>
     </Paper>
   );
