@@ -24,6 +24,7 @@ function AuthForm({ mode, onSubmit }) {
   const { name, email, password } = values;
 
   const [error, setError] = useState('');
+  const [errorFields, setErrorFields] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = ({ target: { name, value } }) => {
@@ -37,6 +38,7 @@ function AuthForm({ mode, onSubmit }) {
     event.preventDefault();
     if (isSubmitting) return;
     setError('');
+    setErrorFields([]);
     setIsSubmitting(true);
 
     const data = mode === 'register' ? values : { email, password };
@@ -57,23 +59,28 @@ function AuthForm({ mode, onSubmit }) {
         (status === 409 || (data?.code === 11000 && data?.keyPattern?.email));
 
       let message = 'Unable to submit the form. Please try again.';
+      let fields = [];
 
       if (status === null) {
         message =
           'Unable to connect to the server. Check your connection and try again.';
       } else if (isDuplicateEmail) {
         message = 'This email is already registered. Please log in.';
+        fields = ['email'];
       } else if (mode === 'login' && [400, 401, 403].includes(status)) {
         message = 'Incorrect email or password.';
+        fields = ['email', 'password'];
       } else if (status === 429) {
         message = 'Too many attempts. Please try again later.';
       } else if (status >= 500) {
         message = 'The server is temporarily unavailable.';
       } else if (mode === 'register' && [400, 422].includes(status)) {
         message = 'Please check your name, email and password.';
+        fields = ['name', 'email', 'password'];
       }
 
       setError(message);
+      setErrorFields(fields);
     } finally {
       setIsSubmitting(false);
     }
@@ -106,6 +113,7 @@ function AuthForm({ mode, onSubmit }) {
               <InputLabel htmlFor="auth-name">Name</InputLabel>
               <OutlinedInput
                 label="Name"
+                aria-describedby={errorFields.includes('name') ? 'auth-error' : undefined}
                 required
                 value={name}
                 type="text"
@@ -125,6 +133,8 @@ function AuthForm({ mode, onSubmit }) {
             <InputLabel htmlFor="auth-email">Email</InputLabel>
             <OutlinedInput
               label="Email"
+                              aria-describedby={errorFields.includes('email') ? 'auth-error' : undefined}
+
               required
               value={email}
               type="email"
@@ -143,6 +153,8 @@ function AuthForm({ mode, onSubmit }) {
             <InputLabel htmlFor="auth-password">Password</InputLabel>
             <OutlinedInput
               label="Password"
+                              aria-describedby={errorFields.includes('password') ? 'auth-error' : undefined}
+
               required
               value={password}
               type="password"
@@ -160,8 +172,11 @@ function AuthForm({ mode, onSubmit }) {
             />
           </FormControl>
 
-          {error && <Alert severity="error">{error}</Alert>}
-
+{error && (
+  <Alert id="auth-error" severity="error" role="alert">
+    {error}
+  </Alert>
+)}
           <Button
             variant="contained"
             type="submit"

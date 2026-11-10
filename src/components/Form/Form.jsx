@@ -15,6 +15,7 @@ export default function Form() {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
   const [error, setError] = useState('');
+  const [invalidField, setInvalidField] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const contacts = useSelector(getContacts);
 
@@ -36,19 +37,23 @@ export default function Form() {
     e.preventDefault();
     if (isSubmitting) return;
     setError('');
+    setInvalidField(null);
     const normalizedName = normalizeName(name);
     const normalizedNumber = normalizePhone(number);
     if (!normalizedName) {
       setError('Enter a name.');
+      setInvalidField('name');
       return;
     }
 
     if (!normalizedNumber) {
       setError('Enter a phone number.');
+      setInvalidField('number');
       return;
     }
     if (!isValidName(normalizedName)) {
       setError('Use letters, spaces, apostrophes or hyphens in the name.');
+      setInvalidField('name');
       return;
     }
 
@@ -56,6 +61,7 @@ export default function Form() {
       setError(
         'Use digits, parentheses, dots or hyphens, with an optional leading +.'
       );
+      setInvalidField('number');
       return;
     }
     if (
@@ -64,6 +70,7 @@ export default function Form() {
       )
     ) {
       setError('A contact with this phone number already exists.');
+      setInvalidField('number');
       return;
     }
     setIsSubmitting(true);
@@ -83,6 +90,7 @@ export default function Form() {
       setError(
         submitError?.message ?? 'Unable to add the contact. Please try again.'
       );
+      setInvalidField(null);
     } finally {
       setIsSubmitting(false);
     }
@@ -93,6 +101,9 @@ export default function Form() {
       <TextField
         id="add-contact-name"
         label="Name"
+        aria-describedby={error ? 'add-contact-error' : undefined}
+        aria-invalid={invalidField === 'name'}
+        error={invalidField === 'name'}
         variant="outlined"
         fullWidth
         type="text"
@@ -105,18 +116,25 @@ export default function Form() {
       />
       <TextField
         id="add-contact-number"
+        name="number"
+        aria-describedby={error ? 'add-contact-error' : undefined}
+        aria-invalid={invalidField === 'number'}
+        error={invalidField === 'number'}
         variant="outlined"
         fullWidth
         label="Number"
         type="tel"
         value={number}
-        name="number"
         title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
         required
         onChange={handleChange}
         disabled={isSubmitting}
       />
-      {error && <Alert severity="error">{error}</Alert>}
+      {error && (
+      <Alert id="add-contact-error" severity="error" role="alert">
+       {error}
+     </Alert>
+      )}
       <Button
         variant="contained"
         size="large"
