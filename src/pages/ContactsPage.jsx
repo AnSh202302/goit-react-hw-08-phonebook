@@ -1,8 +1,7 @@
 import Form from 'components/Form/Form';
 import { Filter } from 'components/Filter/Filter';
 import { ContactList } from 'components/ContactList/ContactList';
-import { useDispatch, useSelector } from 'react-redux';
-import { getError, getIsLoading } from 'store/selector';
+import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { fetchContacts } from 'store/operations';
 import { Box, Container, Paper, Typography } from '@mui/material';
@@ -10,8 +9,6 @@ import { Box, Container, Paper, Typography } from '@mui/material';
 export default function ContactsPage() {
   const dispatch = useDispatch();
 
-  const isLoading = useSelector(getIsLoading);
-  const error = useSelector(getError);
   useEffect(() => {
     dispatch(fetchContacts());
   }, [dispatch]);
@@ -27,12 +24,6 @@ export default function ContactsPage() {
       >
         Contacts
       </Typography>
-
-      {isLoading && !error && (
-        <Typography role="status" sx={{ mb: 2 }}>
-          Request in progress...
-        </Typography>
-      )}
 
       <Box
         sx={{
